@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asisten Administrasi PPDS</title>
+    <style>
+        :root {
+            --primary: #0ea5e9; /* Medical Blue */
+            --primary-dark: #0284c7;
+            --bg-color: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --chaos-bg: #fef2f2;
+            --solution-bg: #f0fdf4;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: #f9fafb; color: var(--text-main); line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        /* Hero Section */
+        .hero { text-align: center; padding: 4rem 0 3rem; }
+        .hero-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2.5rem; color: var(--primary-dark); margin-bottom: 1rem; }
+        .status-badge { display: inline-flex; align-items: center; gap: 0.5rem; background-color: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 600; font-size: 0.875rem; margin-bottom: 1.5rem; border: 1px solid #bbf7d0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .status-dot { width: 10px; height: 10px; background-color: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto; }
+
+        /* Problem & Solution Card */
+        .comparison-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 4rem; }
+        @media(min-width: 768px) { .comparison-grid { grid-template-columns: 1fr 1fr; } }
+        .card { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .card-chaos { border-top: 4px solid #ef4444; background: linear-gradient(to bottom, var(--chaos-bg) 0%, white 100%);}
+        .card-solution { border-top: 4px solid #22c55e; background: linear-gradient(to bottom, var(--solution-bg) 0%, white 100%);}
+        .card h3 { font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .list-item { display: flex; gap: 0.75rem; margin-bottom: 1rem; align-items: flex-start; }
+        
+        /* Core Capabilities */
+        .section-title { text-align: center; font-size: 1.75rem; margin-bottom: 2rem; color: var(--primary-dark); }
+        .features-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 4rem; }
+        @media(min-width: 768px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+        .feature-card { text-align: center; padding: 2rem; background: white; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s; }
+        .feature-card:hover { transform: translateY(-5px); }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+        .feature-card h4 { margin-bottom: 0.5rem; color: var(--primary-dark); }
+        .feature-card p { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* Interactive Simulation */
+        .simulation-container { max-width: 600px; margin: 0 auto 4rem; background: white; border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .chat-header { background: var(--primary); color: white; padding: 1rem; text-align: center; font-weight: bold; }
+        .chat-window { padding: 1.5rem; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: #f8fafc; }
+        .message { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; line-height: 1.4; font-size: 0.95rem; }
+        .msg-bot { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 0; }
+        .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 0; }
+        .typing { display: none; align-self: flex-start; background: transparent; padding: 0.5rem; color: var(--text-muted); font-size: 0.9rem; font-style: italic; }
+        .scenario-buttons { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.5rem; }
+        .btn-scenario { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; text-align: left; }
+        .btn-scenario:hover { background: #e2e8f0; }
+        .btn-scenario:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Footer & CTA */
+        .footer { text-align: center; padding: 3rem 0; border-top: 1px solid var(--border-color); margin-top: 2rem; }
+        .btn-cta { display: inline-block; background: var(--primary); color: white; text-decoration: none; padding: 1rem 2.5rem; border-radius: 999px; font-weight: bold; font-size: 1.1rem; transition: background 0.2s; box-shadow: 0 4px 6px rgba(14, 165, 233, 0.25); margin-bottom: 1.5rem; }
+        .btn-cta:hover { background: var(--primary-dark); }
+        .footer-text { color: var(--text-muted); font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-icon">🩺🤖</div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            🟢 Status: Active & Ready 24/7
+        </div>
+        <h1>Asisten Administrasi PPDS</h1>
+        <p>Membantu dan memudahkan PPDS dalam otomatisasi manajemen rekam medis (EMR) dan laporan operan jaga via Telegram & GDocs, sehingga Anda bisa fokus pada pasien.</p>
+    </section>
+
+    <!-- PROBLEM & SOLUTION CARD -->
+    <section class="comparison-grid">
+        <div class="card card-chaos">
+            <h3>💥 The Chaos</h3>
+            <div class="list-item"><span>❌</span><p>Waktu habis untuk urusan administrasi, mengganggu waktu pelayanan pasien dan kegiatan ilmiah.</p></div>
+            <div class="list-item"><span>❌</span><p>Risiko <i>human error</i> saat input data (EMR/GDocs) akibat lelah atau mengantuk pasca-jaga.</p></div>
+            <div class="list-item"><span>❌</span><p>Beban kerja berlebih karena rasio jumlah pasien yang sangat banyak ditangani setiap harinya.</p></div>
+        </div>
+        <div class="card card-solution">
+            <h3>✨ The Solution</h3>
+            <div class="list-item"><span>✅</span><p>Otomatisasi input SOAP dan pembaruan EMR/Gdocs hanya dengan chat via Telegram.</p></div>
+            <div class="list-item"><span>✅</span><p>Human-in-the-Loop: Semua aksi (resep, order lab, update EMR) memerlukan approval konfirmasi Anda.</p></div>
+            <div class="list-item"><span>✅</span><p>Tarik dan *update* data pasien *real-time* kapan saja tanpa perlu membuka laptop.</p></div>
+        </div>
+    </section>
+
+    <!-- CORE CAPABILITIES -->
+    <h2 class="section-title">Core Capabilities</h2>
+    <section class="features-grid">
+        <div class="feature-card">
+            <span class="feature-icon">📲</span>
+            <h4>Telegram-to-EMR Sync</h4>
+            <p>Input identitas dan SOAP via Telegram. Data otomatis terhubung ke Google Docs (operan) dan draf EMR rumah sakit.</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🔬</span>
+            <h4>Auto-Update & Orders</h4>
+            <p>Order Lab/Radiologi dan dapatkan notifikasi otomatis ke Telegram saat hasil pasien keluar untuk langsung di-update.</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🛡️</span>
+            <h4>Smart Approval System</h4>
+            <p>Asisten akan menyusun draf resep, konsul sejawat, dan pesan ke DPJP yang wajib Anda setujui sebelum dikirim.</p>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE SIMULATION -->
+    <h2 class="section-title">Live Simulation</h2>
+    <section class="simulation-container">
+        <div class="chat-header">Telegram: Asisten PPDS Bot</div>
+        <div class="chat-window" id="chatWindow">
+            <div class="message msg-bot">Halo Dok! Ada yang bisa saya bantu untuk operan atau update EMR pasien hari ini?</div>
+            <div class="typing" id="typingIndicator">Asisten sedang mengetik...</div>
+        </div>
+        <div class="scenario-buttons">
+            <button class="btn-scenario" onclick="runScenario(1)">1. Cek riwayat pasien IGD (Tn. Budi)</button>
+            <button class="btn-scenario" onclick="runScenario(2)">2. Update SOAP untuk operan jaga</button>
+            <button class="btn-scenario" onclick="runScenario(3)">3. Order Lab & Resep Baru</button>
+        </div>
+    </section>
+
+    <!-- FOOTER & CTA -->
+    <footer class="footer">
+        <a href="https://wa.me/6280000000000" target="_blank" class="btn-cta">Hubungi via WhatsApp</a>
+        <p class="footer-text">Built with AI · AI Builder Bootcamp Showcase</p>
+    </footer>
+</div>
+
+<script>
+    const chatWindow = document.getElementById('chatWindow');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const buttons = document.querySelectorAll('.btn-scenario');
+
+    const scenarios = {
+        1: {
+            user: "Cek pasien IGD a.n Budi, 45th. Apakah pernah dirawat di sini?",
+            bot: "Mengecek EMR... 🔍\nYa, Tn. Budi (RM: 882910) pernah dirawat 3 bulan lalu. Ringkasan terakhir: Dx. Dyspepsia Syndrome. Apakah Dokter ingin saya siapkan draf form EMR IGD untuk pasien ini sekarang?"
+        },
+        2: {
+            user: "Update SOAP Tn. Budi. S: Nyeri ulu hati berkurang. O: TD 120/80, HR 80x. A: Dyspepsia perbaikan. P: Lanjut medikasi.",
+            bot: "Data diterima. Draf SOAP telah dimasukkan ke GDocs Operan Jaga dan siap diinput ke EMR. 📝\n\n[MENUNGGU APPROVAL]\nKetik 'YA' untuk menyimpan ke EMR dan merangkum pesan ke DPJP."
+        },
+        3: {
+            user: "Orderkan Darah Rutin untuk Tn. Budi dan resepkan Omeprazole 1x40mg IV.",
+            bot: "Memproses... ⚙️\nDraf order Lab (Darah Rutin) dan Resep (Omeprazole 40mg IV) telah dibuat di EMR.\n\n[MENUNGGU APPROVAL]\nMohon konfirmasi pesanan ini sebelum saya *submit* ke sistem apotek dan lab."
+        }
+    };
+
+    function runScenario(id) {
+        // Disable buttons
+        buttons.forEach(btn => btn.disabled = true);
+        
+        // Hide typing indicator temporarily if active, remove previous messages
+        typingIndicator.style.display = 'none';
+
+        // Add user message
+        addMessage(scenarios[id].user, 'msg-user');
+        
+        // Show typing indicator
+        setTimeout(() => {
+            typingIndicator.style.display = 'block';
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }, 300);
+
+        // Add bot response
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+            addMessage(scenarios[id].bot, 'msg-bot');
+            buttons.forEach(btn => btn.disabled = false);
+        }, 2000);
+    }
+
+    function addMessage(text, className) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${className}`;
+        msgDiv.innerText = text;
+        chatWindow.insertBefore(msgDiv, typingIndicator);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
+```eof
+
+Simpan kode ini sebagai `index.html`, lalu ikuti panduan deploy di materi bootcamp.
